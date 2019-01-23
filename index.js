@@ -209,7 +209,7 @@ class HotUpdate extends Component {
                                         <Text style={{color: '#fff', }}>立即安装更新</Text>
                                     </View>
                                 </TouchableOpacity> : (this.state.isSync ? <View style={{height: 60, width: 0.8 * SWidth - 40, alignItems: 'center', justifyContent: 'center'}}>
-                                    <ProgressBar ref="progressBar" currProgress={this.state.currProgress}/>
+                                    <ProgressBar ref="progressBar" currProgress={`${Math.ceil(this.state.currProgress * 100)}%`}/>
                                     <Text style={{marginTop: 10, color: '#333'}}>下载更新包中</Text>
                                 </View>:<View style={{
                                     justifyContent: 'center', height: 60, width: 0.8 * SWidth,

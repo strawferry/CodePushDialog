@@ -76,7 +76,7 @@ export default class CusProgressBar extends Component {
                     flexDirection: 'row',
                     marginLeft: this._bufferAni,
                 }}>
-                <Text style={{color: '#fff', fontSize: 10}}>{`${this.props.currProgress * 100}%`}</Text>
+                <Text style={{color: '#fff', fontSize: 10}}>{this.props.currProgress}</Text>
                 <Image resizeMode={'contain'} style={{width: 15, height: 15, marginLeft:2}} source={require('./images/airplane.png')}/>
             </Animated.View>
             </View>
