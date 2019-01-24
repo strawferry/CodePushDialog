@@ -80,7 +80,6 @@ class HotUpdate extends Component {
     }
 
     _handleAppStateChange = (nextAppState)=>{
-        console.log('-------_handleAppStateChange------', nextAppState);
         if (nextAppState === 'active') {
             this.syncImmediate();
         }
@@ -90,10 +89,10 @@ class HotUpdate extends Component {
     syncImmediate() {
         if(!this.state.next){
             CodePush.checkForUpdate(this.props.deploymentKey).then((update) => {
-                console.log('-------CodePush-------检测热更新包--');
-                console.log(update);
                 if (update) {
-                    this.setState({showUpdate: true, updateInfo: update, isMandatory: update.isMandatory})
+                    console.log('-------CodePush-------检测到新的热更新包--');
+                    console.log(update);
+                    this.setState({showUpdate: true, updateInfo: update, isMandatory: update.isMandatory});
                 }
             })
         }
@@ -168,8 +167,11 @@ class HotUpdate extends Component {
             this.setState({currProgress: temp}, ()=>{
                 this.currProgress = temp;
                 if(temp >= 1) {
+                    console.log('------热更新包下载完成------');
                     if(!this.state.isMandatory){
                         this.setState({update: true});
+                    }else{
+                        this.setState({showUpdate: false});
                     }
                 } else {
                     this.refs.progressBar.progress = temp;
@@ -203,7 +205,10 @@ class HotUpdate extends Component {
                                 alignItems: 'center', justifyContent: 'center',
                             }}>
                                 {this.state.update ? <TouchableOpacity  onPress={()=>{
-                                    CodePush.restartApp(true);
+                                    console.log('--------点击---------立即安装更新-----------');
+                                    this.setState({showUpdate: false}, ()=>{
+                                        CodePush.restartApp(true);
+                                    })
                                 }} style={{height: 40, width: 0.5 * SWidth}}>
                                     <View style={{height: 40, width: 0.5 * SWidth, flex: 1, alignItems: 'center', borderRadius: 20, justifyContent: 'center', backgroundColor: '#2979FF',}}>
                                         <Text style={{color: '#fff', }}>立即安装更新</Text>
@@ -218,6 +223,7 @@ class HotUpdate extends Component {
                                 }}>
                                     {this.state.isMandatory ? null : <TouchableOpacity  onPress={()=>{
                                         this.setState({showUpdate: false, next: true});
+                                        console.log('--------点击---------稍后更新-----------');
                                     }} style={{height: 40, maxWidth: 0.5 * SWidth, marginHorizontal: 10, flex: 1}}>
                                         <View style={{height: 40, maxWidth: 0.5 * SWidth, alignItems: 'center', borderRadius: 20, justifyContent: 'center', backgroundColor: '#eee', flex: 1}}>
                                             <Text style={{color: '#666', }}>稍后更新</Text>
