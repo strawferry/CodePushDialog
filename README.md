@@ -1,3 +1,5 @@
+# 基于 strawferry/CodePushDialog 修改processBar.js buffer & process ref适配RN0.66+, 修改部分样式
+
 ## 项目说明
 在用 ReactNative 开发 App 时,会用到 CodePush 做应用的热更新,但是在升级的时候没有好看的弹窗提示,自己就找了个时间写了一个简单集成 ReactNative 又有好看的更新弹窗;
 

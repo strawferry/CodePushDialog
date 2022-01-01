@@ -1,5 +1,5 @@
-import React, {Component}from 'react'
-import {View, StyleSheet, Animated, Easing, Image, Text}from 'react-native'
+import React, { Component } from 'react'
+import { View, StyleSheet, Animated, Easing, Image, Text } from 'react-native'
 
 import PropTypes from 'prop-types'
 
@@ -36,6 +36,8 @@ export default class CusProgressBar extends Component {
         super(props)
         this._progressAni = new Animated.Value(0)
         this._bufferAni = new Animated.Value(0)
+        this.progressRef = React.createRef()
+        this.bufferRef = React.createRef()
     }
 
     componentWillReceiveProps(nextProps) {
@@ -52,38 +54,38 @@ export default class CusProgressBar extends Component {
 
     render() {
         return (
-            <View style={[{height: 15, width: 200, backgroundColor: '#ddd', borderRadius: 7.5}, this.props.style]}>
-            <View
-                style={[{height: 15, width: 200, backgroundColor: '#ddd', borderRadius: 7.5}, this.props.style]}
-                onLayout={this._onLayout.bind(this)}>
+            <View style={[{ height: 15, width: 200, backgroundColor: '#ddd', borderRadius: 7.5 }, this.props.style]}>
+                <View
+                    style={[{ height: 15, width: 200, backgroundColor: '#ddd', borderRadius: 7.5 }, this.props.style]}
+                    onLayout={this._onLayout.bind(this)}>
+                    <Animated.View
+                        ref={this.progressRef}
+                        style={{
+                            position: 'absolute',
+                            width: this._progressAni,
+                            backgroundColor: this.props.progressColor,
+                            borderRadius: 7.5
+                        }} />
+                </View>
                 <Animated.View
-                    ref="progress"
+                    ref={this.bufferRef}
                     style={{
-                        position:'absolute',
-                        width: this._progressAni,
-                        backgroundColor: this.props.progressColor,
-                        borderRadius: 7.5
-                    }}/>
-            </View>
-            <Animated.View
-                ref="buffer"
-                style={{
-                    position:'absolute',
-                    width: 33,
-                    height: 15,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexDirection: 'row',
-                    marginLeft: this._bufferAni,
-                }}>
-                <Text style={{color: '#fff', fontSize: 10}}>{this.props.currProgress}</Text>
-                <Image resizeMode={'contain'} style={{width: 15, height: 15, marginLeft:2}} source={require('./images/airplane.png')}/>
-            </Animated.View>
+                        position: 'absolute',
+                        width: 33,
+                        height: 15,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexDirection: 'row',
+                        marginLeft: this._bufferAni,
+                    }}>
+                    <Text style={{ color: '#fff', fontSize: 10 }}>{this.props.currProgress}</Text>
+                    <Image resizeMode={'contain'} style={{ width: 15, height: 15, marginLeft: 2 }} source={require('./images/airplane.png')} />
+                </Animated.View>
             </View>
         )
     }
 
-    _onLayout({nativeEvent: {layout:{width, height}}}) {
+    _onLayout({ nativeEvent: { layout: { width, height } } }) {
         // 防止多次调用,当第一次获取后,后面就不再去获取了
         if (width > 0 && this.totalWidth !== width) {
             // 获取progress控件引用
@@ -118,7 +120,8 @@ export default class CusProgressBar extends Component {
             Animated.timing(this._progressAni, {
                 toValue: progress * this.totalWidth,
                 duration: this.props.progressAniDuration,
-                easing: Easing.linear
+                easing: Easing.linear,
+                useNativeDriver: false
             }).start()
         }
     }
@@ -128,27 +131,28 @@ export default class CusProgressBar extends Component {
             Animated.timing(this._bufferAni, {
                 toValue: buffer * this.totalWidth,
                 duration: this.props.bufferAniDuration,
+                useNativeDriver: false
             }).start()
         }
     }
 
     _getProgress() {
-        if (typeof this.refs.progress.refs.node !== 'undefined') {
-            return this.refs.progress.refs.node
+        if (typeof this.progressRef.current !== 'undefined') {
+            return this.progressRef.current
         }
-        return this.refs.progress._component
+        return this.progressRef.current
     }
 
     _getBuffer() {
-        if (typeof this.refs.buffer.refs.node !== 'undefined') {
-            return this.refs.buffer.refs.node;
+        if (typeof this.bufferRef.current !== 'undefined') {
+            return this.bufferRef.current;
         }
-        return this.refs.buffer._component;
+        return this.bufferRef.current;
     }
 }
 
 Object.defineProperty(CusProgressBar.prototype, 'progress', {
-    set(value){
+    set(value) {
         if (value >= 0 && this._progress !== value) {
             this._progress = value;
             this._startAniProgress(value);
@@ -161,7 +165,7 @@ Object.defineProperty(CusProgressBar.prototype, 'progress', {
 })
 
 Object.defineProperty(CusProgressBar.prototype, 'buffer', {
-    set(value){
+    set(value) {
         if (value >= 0 && this._buffer !== value) {
             this._buffer = value;
             this._startAniBuffer(value);
