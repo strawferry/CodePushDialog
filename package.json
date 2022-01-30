@@ -1,6 +1,6 @@
 {
   "name": "react-native-code-push-dialog",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "codepush custom dialog",
   "main": "index.js",
   "scripts": {
